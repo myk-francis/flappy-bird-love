@@ -10,6 +10,13 @@ local GameOverState = require("src/states/game_over_state")
 function love.load()
     -- Render pixel shapes crisply without anti-aliasing blur
     love.graphics.setDefaultFilter("nearest", "nearest")
+
+    -- Create a global asset table
+    gTextures = {
+        ["background"] = love.graphics.newImage("assets/textures/background.png"),
+        ["bird"] = love.graphics.newImage("assets/textures/bird_wing_up.png"),
+        ["pipe"] = love.graphics.newImage("assets/textures/pipe.png")
+    }
     
     -- Seed the random number generator so gaps aren't identical every execution
     love.math.setRandomSeed(os.time())

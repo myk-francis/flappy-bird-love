@@ -11,10 +11,16 @@ function Bird.new(x, y)
     local instance = {
         x = x,
         y = y,
-        width = 34,          -- Approximated bounding box width
-        height = 24,         -- Approximated bounding box height
+        -- 1. Load the image asset directly into the instance
+        texture = gTextures["bird"],
+        -- width = 34,          -- Approximated bounding box width
+        -- height = 24,         -- Approximated bounding box height
         dy = 0               -- Velocity along the Y-axis (delta-y)
     }
+
+     -- 2. Dynamically grab the width and height directly from the image file dimensions
+    instance.width = instance.texture:getWidth()
+    instance.height = instance.texture:getHeight()
     return setmetatable(instance, Bird)
 end
 
@@ -45,9 +51,12 @@ end
 
 function Bird:draw()
     -- Temporarily render a simple yellow rectangle until we use actual textures later
-    love.graphics.setColor(1, 0.9, 0) -- Yellow color
-    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-    love.graphics.setColor(1, 1, 1)    -- Always reset color back to white
+    -- love.graphics.setColor(1, 0.9, 0) -- Yellow color
+    -- love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    -- love.graphics.setColor(1, 1, 1)    -- Always reset color back to white
+
+    -- Parameters: texture, x, y, rotation (0), scaleX (1), scaleY (1)
+    love.graphics.draw(self.texture, self.x, self.y)
 end
 
 return Bird
