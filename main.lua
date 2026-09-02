@@ -24,6 +24,19 @@ function love.load()
     -- 2. Define our custom keyboard lookup table
     love.keyboard.keysPressed = {}
 
+    -- -- 1. Calculate how much to upscale your image to perfectly match the 400x600 window
+    -- local bgWidth = gTextures["background"]:getWidth()
+    -- local bgHeight = gTextures["background"]:getHeight()
+    
+    -- gBgScaleX = 400 / bgWidth   -- Horizontal scale factor
+    -- gBgScaleY = 600 / bgHeight  -- Vertical scale factor
+
+    -- -- 2. Scrolling background parameters
+    -- gBgScroll = 0               -- Current tracking offset along the X-axis
+    -- gBgSpeed = 30               -- Movement speed (30 pixels per second)
+    -- -- The virtual upscaled width of our background image
+    -- gBgLoopWidth = bgWidth * gBgScaleX
+
     -- 3. Initialize State Machine with real state instances
     gStateMachine = StateMachine.new({
         ["menu"] = MenuState.new(),
