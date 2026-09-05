@@ -5,7 +5,7 @@ Pipe.__index = Pipe
 
 -- Class Constants
 local SCROLL_SPEED = 120    -- Speed at which pipes scroll left (pixels per second)
-local PIPE_WIDTH = 60       -- Horizontal thickness of our pipes
+local PIPE_WIDTH = 100      -- Horizontal thickness of our pipes
 
 function Pipe.new(x, gapY, gapHeight)
     local instance = {
@@ -29,18 +29,40 @@ function Pipe:update(dt)
 end
 
 function Pipe:draw()
-    -- Temporarily render green rectangles until we add graphics sprites later
-    love.graphics.setColor(0.2, 0.7, 0.2) -- Green color
+    -- Get base image dimensions from the global asset table
+    local pipeImage = gTextures["pipe"]
+    local imgWidth = pipeImage:getWidth()
+    local imgHeight = pipeImage:getHeight()
+
+    -- Calculate horizontal scale (Fixed to keep it 60px wide)
+    local scaleX = gPipeScaleX
+
+    -- 1. Render Top Pipe (Flipped upside down)
+    local topPipeHeight = self.gapY
+    local topScaleY = topPipeHeight / imgHeight
     
-    -- 1. Render Top Pipe (From Y = 0 down to the top of the gap)
-    love.graphics.rectangle("fill", self.x, 0, self.width, self.gapY)
+    love.graphics.draw(
+        pipeImage, 
+        self.x, 
+        topPipeHeight, -- Position at the bottom of the top pipe section because it flips downward
+        0, 
+        scaleX, 
+        -topScaleY     -- Negative Y scale flips the texture upside down
+    )
     
-    -- 2. Render Bottom Pipe (From bottom of the gap down to the bottom of the window)
+    -- 2. Render Bottom Pipe (Right side up)
     local bottomPipeY = self.gapY + self.gapHeight
     local bottomPipeHeight = 600 - bottomPipeY
-    love.graphics.rectangle("fill", self.x, bottomPipeY, self.width, bottomPipeHeight)
+    local bottomScaleY = bottomPipeHeight / imgHeight
     
-    love.graphics.setColor(1, 1, 1) -- Reset renderer color
+    love.graphics.draw(
+        pipeImage, 
+        self.x, 
+        bottomPipeY, 
+        0, 
+        scaleX, 
+        bottomScaleY   -- Standard scale stretches it straight down
+    )
 end
 
 -- A helper function we will use later to check if the bird overlaps this pipe pair

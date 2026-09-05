@@ -14,7 +14,8 @@ function love.load()
     -- Create a global asset table
     gTextures = {
         ["background"] = love.graphics.newImage("assets/textures/background.png"),
-        ["bird"] = love.graphics.newImage("assets/textures/bird_wing_up.png"),
+        ["bird_up"] = love.graphics.newImage("assets/textures/bird_wing_up.png"),
+        ["bird_down"] = love.graphics.newImage("assets/textures/bird_wing_down.png"),
         ["pipe"] = love.graphics.newImage("assets/textures/pipe.png")
     }
     
@@ -23,6 +24,16 @@ function love.load()
 
     -- 2. Define our custom keyboard lookup table
     love.keyboard.keysPressed = {}
+
+    -- The actual dimensions of your source image
+    local pipeWidth = gTextures["pipe"]:getWidth()   -- 200
+    local pipeHeight = gTextures["pipe"]:getHeight() -- 376
+
+    -- Target width in your game logic
+    gPipeTargetWidth = 100
+
+    -- Horizontal scale factor (100 / 200 = 0.5)
+    gPipeScaleX = gPipeTargetWidth / pipeWidth
 
     -- 1. Calculate how much to upscale your image to perfectly match the 400x600 window
     local bgWidth = gTextures["background"]:getWidth()

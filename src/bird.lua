@@ -6,27 +6,35 @@ Bird.__index = Bird
 -- Class Constants (Tweak these to change the "feel" of your jump!)
 local GRAVITY = 900          -- Downward acceleration rate
 local JUMP_IMPULSE = -280    -- Velocity applied upward when flapping
+local ANIMATION_SPEED = 0.15 -- Swap frames every 0.15 seconds
 
 function Bird.new(x, y)
     local instance = {
         x = x,
         y = y,
-        -- 1. Load the image asset directly into the instance
-        texture = gTextures["bird"],
-        -- width = 34,          -- Approximated bounding box width
-        -- height = 24,         -- Approximated bounding box height
-        dy = 0               -- Velocity along the Y-axis (delta-y)
-    }
+        dy = 0,               -- Velocity along the Y-axis (delta-y)
+        
+        -- Dimensions (Match your asset size dynamically)
+        width = gTextures["bird_up"]:getWidth(),
+        height = gTextures["bird_up"]:getHeight(),
 
-     -- 2. Dynamically grab the width and height directly from the image file dimensions
-    instance.width = instance.texture:getWidth()
-    instance.height = instance.texture:getHeight()
+        -- Animation states
+        frames = {
+            gTextures["bird_up"],
+            gTextures["bird_down"]
+        },
+        currentFrame = 1,
+        animationTimer = 0
+    }
+    
     return setmetatable(instance, Bird)
 end
 
--- Force the velocity upward
+-- Force the velocity upward and instantly snap wings down
 function Bird:flap()
     self.dy = JUMP_IMPULSE
+    self.currentFrame = 2    -- Snap to wing down position when flapping
+    self.animationTimer = 0  -- Reset timer so the flap frames stay visible for a moment
 end
 
 function Bird:update(dt)
@@ -47,16 +55,22 @@ function Bird:update(dt)
         self.y = 0
         self.dy = 0
     end
+
+    -- 5. Advance flying animation sequence over time
+    self.animationTimer = self.animationTimer + dt
+    if self.animationTimer >= ANIMATION_SPEED then
+        self.animationTimer = 0
+        -- Alternate between frame 1 and frame 2
+        self.currentFrame = self.currentFrame == 1 and 2 or 1
+    end
 end
 
 function Bird:draw()
-    -- Temporarily render a simple yellow rectangle until we use actual textures later
-    -- love.graphics.setColor(1, 0.9, 0) -- Yellow color
-    -- love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-    -- love.graphics.setColor(1, 1, 1)    -- Always reset color back to white
-
+    -- Render the active wing sprite frame from our table
+    local activeSprite = self.frames[self.currentFrame]
+    
     -- Parameters: texture, x, y, rotation (0), scaleX (1), scaleY (1)
-    love.graphics.draw(self.texture, self.x, self.y)
+    love.graphics.draw(activeSprite, self.x, self.y)
 end
 
 return Bird
