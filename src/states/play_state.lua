@@ -49,7 +49,7 @@ end
 
 function PlayState:draw()
     -- Clear background sky
-    love.graphics.clear(0.39, 0.58, 0.93)
+    -- love.graphics.clear(0.39, 0.58, 0.93)
 
     -- Render the active obstacles and player character
     self.pipeManager:draw()

@@ -24,18 +24,18 @@ function love.load()
     -- 2. Define our custom keyboard lookup table
     love.keyboard.keysPressed = {}
 
-    -- -- 1. Calculate how much to upscale your image to perfectly match the 400x600 window
-    -- local bgWidth = gTextures["background"]:getWidth()
-    -- local bgHeight = gTextures["background"]:getHeight()
+    -- 1. Calculate how much to upscale your image to perfectly match the 400x600 window
+    local bgWidth = gTextures["background"]:getWidth()
+    local bgHeight = gTextures["background"]:getHeight()
     
-    -- gBgScaleX = 400 / bgWidth   -- Horizontal scale factor
-    -- gBgScaleY = 600 / bgHeight  -- Vertical scale factor
+    gBgScaleX = 400 / bgWidth   -- Horizontal scale factor
+    gBgScaleY = 600 / bgHeight  -- Vertical scale factor
 
-    -- -- 2. Scrolling background parameters
-    -- gBgScroll = 0               -- Current tracking offset along the X-axis
-    -- gBgSpeed = 30               -- Movement speed (30 pixels per second)
-    -- -- The virtual upscaled width of our background image
-    -- gBgLoopWidth = bgWidth * gBgScaleX
+    -- 2. Scrolling background parameters
+    gBgScroll = 0               -- Current tracking offset along the X-axis
+    gBgSpeed = 30               -- Movement speed (30 pixels per second)
+    -- The virtual upscaled width of our background image
+    gBgLoopWidth = bgWidth * gBgScaleX
 
     -- 3. Initialize State Machine with real state instances
     gStateMachine = StateMachine.new({
@@ -66,6 +66,9 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.update(dt)
+    -- Update background scroll offset
+    gBgScroll = (gBgScroll + gBgSpeed * dt) % gBgLoopWidth
+
     -- Tick frame calculations down into whatever state is currently active
     gStateMachine:update(dt)
     
@@ -75,6 +78,10 @@ function love.update(dt)
 end
 
 function love.draw()
+    -- Draw the background (First copy and repeating second copy)
+    love.graphics.draw(gTextures["background"], -gBgScroll, 0, 0, gBgScaleX, gBgScaleY)
+    love.graphics.draw(gTextures["background"], -gBgScroll + gBgLoopWidth, 0, 0, gBgScaleX, gBgScaleY)
+    
     -- Render whatever visual instructions the current active state defines
     gStateMachine:draw()
 end
