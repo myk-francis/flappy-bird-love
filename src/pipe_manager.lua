@@ -5,7 +5,7 @@ local PipeManager = {}
 PipeManager.__index = PipeManager
 
 -- Class Constants
-local SPAWN_INTERVAL = 2.0    -- Spawn a new pipe every 2 seconds
+local SPAWN_INTERVAL = 3.0    -- Spawn a new pipe every 2 seconds
 local GAP_HEIGHT = 120        -- Size of the opening the bird flies through
 
 function PipeManager.new()
